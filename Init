@@ -1,0 +1,836 @@
+
+local Exploiter = game:GetService('Players').LocalPlayer
+local CoreGui = game:GetService('CoreGui')
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+
+function CreateNew(class,data)
+	local obj = Instance.new(class);
+	for i, v in next, data do
+		if i ~= 'Parent' then
+
+			if typeof(v) == "Instance" then
+				v.Parent = obj;
+			else
+				obj[i] = v
+			end
+		end
+	end
+
+	obj.Parent = data.Parent;
+	return obj
+end
+
+local MainGui = CreateNew('ScreenGui',{
+	['Name'] = 'SynapseCommands';
+	['Parent'] = CoreGui;
+})
+local GuiFrame = CreateNew('Frame',{
+	['Name'] = 'GuiFrame';
+	['Size'] = UDim2.new(0.4,0,0.6,0);
+	['Position'] = UDim2.new(0.1,0,0.1,0);
+	['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+	['Draggable'] = true;
+	['Active'] = true;
+	['ZIndex'] = 0;
+	['Parent'] = MainGui;
+})
+local MainFrame = CreateNew('Frame',{
+	['Name'] = 'Main';
+	['Size'] = UDim2.new(1,0,1,0);
+	['Draggable'] = true;
+	['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+	['Parent'] = GuiFrame;
+})
+local TopBar = CreateNew('Frame',{
+	['Name'] = 'TopBar';
+	['Size'] = UDim2.new(1,0,0.05,0);
+	['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+	['BorderColor3'] = Color3.fromRGB(0,0,0);
+	['Parent'] = MainFrame;
+	['SynText'] = CreateNew('TextLabel',{
+		['Name'] = 'SynapseText';
+		['Size'] = UDim2.new(1,0,1,0);
+		['BackgroundTransparency'] = 1;
+		['Text'] = 'Synapse Commands';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextStrokeColor3'] = Color3.fromRGB(0,0,0);
+		['TextStrokeTransparency'] = 0;
+		['Font'] = Enum.Font.ArialBold;
+		['TextScaled'] = true;
+		['TextXAlignment'] = Enum.TextXAlignment.Center;
+	});
+	['CreText'] = CreateNew('TextLabel',{
+		['Name'] = 'CreatorLabel';
+		['Size'] = UDim2.new(0.3,0,1,0);
+		['BackgroundTransparency'] = 1;
+		['Text'] = 'Creator: Absolutionism';
+		['TextColor3'] = Color3.fromRGB(255,0,0);
+		['TextStrokeColor3'] = Color3.fromRGB(0,0,0);
+		['TextStrokeTransparency'] = 0;
+		['Font'] = Enum.Font.ArialBold;
+		['TextScaled'] = true;
+		['TextXAlignment'] = Enum.TextXAlignment.Left;
+	});
+	['Close'] = CreateNew('TextButton',{
+		['Name'] = 'Close';
+		['BackgroundColor3'] = Color3.fromRGB(255,0,0);
+		['BorderColor3'] = Color3.fromRGB(0,0,0);
+		['Size'] = UDim2.new(0.05,0,1,0);
+		['Position'] = UDim2.new(0.95,0,0,0);
+		['Text'] = 'X';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+	});
+});
+local SubFrame = CreateNew('Frame',{
+	['Name'] = 'SubFrame';
+	['Size'] = UDim2.new(1,0,0.95,0);
+	['Position'] = UDim2.new(0,0,0.05,0);
+	['BackgroundTransparency'] = 1;
+	['Parent'] = MainFrame;
+})
+local CommandFrame = CreateNew('Frame',{
+	['Name'] = 'CommandsFrame';
+	['Size'] = UDim2.new(1,0,0.1,0);
+	['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+	['BorderColor3'] = Color3.fromRGB(0,0,0);
+	['Parent'] = SubFrame;
+	['UILL'] = CreateNew('UIListLayout',{
+		['FillDirection'] = Enum.FillDirection.Horizontal;
+		['Padding'] = UDim.new(0,10);
+	});
+	['UIP'] = CreateNew('UIPadding',{
+		['PaddingTop'] = UDim.new(0,10);
+	})
+})
+local InstanceFrame = CreateNew('Frame',{
+	['Name'] = 'InstancesFrame';
+	['Size'] = UDim2.new(0.3,0,0.9,0);
+	['Position'] = UDim2.new(0,0,0.1,0);
+	['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+	['BorderColor3'] = Color3.fromRGB(0,0,0);
+	['Parent'] = SubFrame;
+	['Label'] = CreateNew('TextLabel',{
+		['Name'] = 'Label';
+		['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+		['BorderColor3'] = Color3.fromRGB(0,0,0);
+		['Size'] = UDim2.new(1,0,0.05,0);
+		['Text'] = 'Instances';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+	});
+	['ScrollFrame'] = CreateNew('ScrollingFrame',{
+		['Name'] = 'Scroll';
+		['Size'] = UDim2.new(1,0,0.95,0);
+		['Position'] = UDim2.new(0,0,0.05,0);
+		['BackgroundTransparency'] = 1;
+		['ScrollBarThickness'] = 0;
+		['UILL'] = CreateNew('UIListLayout',{})
+	});
+})
+local EventFrame = CreateNew('Frame',{
+	['Name'] = 'EventsFrame';
+	['Size'] = UDim2.new(0.3,0,0.9,0);
+	['Position'] = UDim2.new(0.3,0,0.1,0);
+	['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+	['BorderColor3'] = Color3.fromRGB(0,0,0);
+	['Parent'] = SubFrame;
+	['Label'] = CreateNew('TextLabel',{
+		['Name'] = 'Label';
+		['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+		['BorderColor3'] = Color3.fromRGB(0,0,0);
+		['Size'] = UDim2.new(1,0,0.05,0);
+		['Text'] = 'Events';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+	});
+	['ScrollFrame'] = CreateNew('ScrollingFrame',{
+		['Name'] = 'Scroll';
+		['Size'] = UDim2.new(1,0,0.95,0);
+		['Position'] = UDim2.new(0,0,0.05,0);
+		['BackgroundTransparency'] = 1;
+		['ScrollBarThickness'] = 0;
+		['UILL'] = CreateNew('UIListLayout',{})
+	});
+})
+local DisplayFrame = CreateNew('Frame',{
+	['Name'] = 'DisplayFrame';
+	['Size'] = UDim2.new(0.4,0,0.9,0);
+	['Position'] = UDim2.new(0.6,0,0.1,0);
+	['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+	['BorderColor3'] = Color3.fromRGB(0,0,0);
+	['Parent'] = SubFrame;
+})
+local InfoFrame = CreateNew('Frame',{
+	['Name'] = 'InfoFrame';
+	['Size'] = UDim2.new(1,0,0.8,0);
+	['BackgroundTransparency'] = 1;
+	['Parent'] = DisplayFrame;
+	['ILabel'] = CreateNew('TextLabel',{
+		['Name'] = 'ILabel';
+		['Size'] = UDim2.new(1,0,0.05,0);
+		['Position'] = UDim2.new(0,0,0.05,0);
+		['BackgroundTransparency'] = 1;
+		['Text'] = 'Instance Selected';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+	});
+	['InstanceSelected'] = CreateNew('TextLabel',{
+		['Name'] = 'InstanceSelected';
+		['Size'] = UDim2.new(0.9,0,0.05,0);
+		['Position'] = UDim2.new(0.05,0,0.1,0);
+		['BackgroundTransparency'] = 1;
+		['Text'] = 'None';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+		['TextXAlignment'] = Enum.TextXAlignment.Left;
+	});
+	['ELabel'] = CreateNew('TextLabel',{
+		['Name'] = 'ELabel';
+		['Size'] = UDim2.new(1,0,0.05,0);
+		['Position'] = UDim2.new(0,0,0.2,0);
+		['BackgroundTransparency'] = 1;
+		['Text'] = 'Event Selected';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+	});
+	['EventSelected'] = CreateNew('TextLabel',{
+		['Name'] = 'EventSelected';
+		['Size'] = UDim2.new(0.9,0,0.05,0);
+		['Position'] = UDim2.new(0.05,0,0.25,0);
+		['BackgroundTransparency'] = 1;
+		['Text'] = 'None';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+		['TextXAlignment'] = Enum.TextXAlignment.Left;
+	});
+	
+	['SettingsLabel'] = CreateNew('TextLabel',{
+		['Name'] = 'SettingsLabel';
+		['Size'] = UDim2.new(0.9,0,0.05,0);
+		['Position'] = UDim2.new(0.05,0,0.4,0);
+		['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+		['BorderColor3'] = Color3.fromRGB(0,0,0);
+		['BorderSizePixel'] = 3;
+		['Text'] = 'Settings';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+	});
+	['PrintFrame'] = CreateNew('Frame',{
+		['Name'] = 'PrintFrame';
+		['BackgroundTransparency'] = 1;
+		['Size'] = UDim2.new(0.9,0,0.05,0);
+		['Position'] = UDim2.new(0.05,0,0.475,0);
+		['PrintLabel'] = CreateNew('TextLabel',{
+			['Name'] = 'PrintLabel';
+			['BackgroundTransparency'] = 1;
+			['Size'] = UDim2.new(0.5,0,0.9,0);
+			['Position'] = UDim2.new(0,0,0.05,0);
+			['Text'] = 'Print';
+			['TextColor3'] = Color3.fromRGB(255,255,255);
+			['TextScaled'] = true;
+			['TextXAlignment'] = Enum.TextXAlignment.Left;
+		});
+		['PrintButton'] = CreateNew('TextButton',{
+			['Name'] = 'PrintButton';
+			['BackgroundColor3'] = Color3.fromRGB(0,255,0);
+			['BorderColor3'] = Color3.fromRGB(0,0,0);
+			['Size'] = UDim2.new(0.05,0,0.9,0);
+			['Position'] = UDim2.new(0.5,0,0.05,0);
+			['Text'] = ''
+		});
+	});
+	['WriteFrame'] = CreateNew('Frame',{
+		['Name'] = 'WriteFrame';
+		['BackgroundTransparency'] = 1;
+		['Size'] = UDim2.new(0.9,0,0.05,0);
+		['Position'] = UDim2.new(0.05,0,0.525,0);
+		['WriteLabel'] = CreateNew('TextLabel',{
+			['Name'] = 'WriteLabel';
+			['BackgroundTransparency'] = 1;
+			['Size'] = UDim2.new(0.45,0,0.9,0);
+			['Position'] = UDim2.new(0,0,0.05,0);
+			['Text'] = 'Write Clipboard';
+			['TextColor3'] = Color3.fromRGB(255,255,255);
+			['TextScaled'] = true;
+			['TextXAlignment'] = Enum.TextXAlignment.Left;
+		});
+		['WriteButton'] = CreateNew('TextButton',{
+			['Name'] = 'WriteButton';
+			['BackgroundColor3'] = Color3.fromRGB(0,255,0);
+			['BorderColor3'] = Color3.fromRGB(0,0,0);
+			['Size'] = UDim2.new(0.05,0,0.9,0);
+			['Position'] = UDim2.new(0.5,0,0.05,0);
+			['Text'] = ''
+		});
+	});
+	
+	
+	['Activate'] = CreateNew('TextButton',{
+		['Name'] = 'Activate';
+		['Size'] = UDim2.new(0.3,0,0.05,0);
+		['Position'] = UDim2.new(0.35,0,0.8,0);
+		['BackgroundColor3'] = Color3.fromRGB(40,40,40);
+		['BorderColor3'] = Color3.fromRGB(0,0,0);
+		['Text'] = 'Activate';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+	})
+})
+local AdvancedFrame = CreateNew('Frame',{
+	['Name'] = 'AdvancedFrame';
+	['BackgroundColor3'] = Color3.fromRGB(80,80,80);
+	['BorderColor3'] = Color3.fromRGB(0,0,0);
+	['Size'] = UDim2.new(1,0,0.2,0);
+	['Position'] = UDim2.new(0,0,0.8,0);
+	['Parent'] = DisplayFrame;
+	['Label'] = CreateNew('TextLabel',{
+		['Name'] = 'Label';
+		['Size'] = UDim2.new(1,0,0.4,0);
+		['BackgroundTransparency'] = 1;
+		['Text'] = 'Advanced (Custom Instance)';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['Font'] = Enum.Font.ArialBold;
+		['TextScaled'] = true;
+	});
+	['Custom'] = CreateNew('TextBox',{
+		['Name'] = 'CustomPathway';
+		['Size'] = UDim2.new(0.65,0,0.5,0);
+		['Position'] = UDim2.new(0.05,0,0.45,0);
+		['BackgroundColor3'] = Color3.fromRGB(40,40,40);
+		['BorderColor3'] = Color3.fromRGB(0,0,0);
+		['Text'] = '';
+		['PlaceholderText'] = 'Type/Paste Pathway';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+		['ClearTextOnFocus'] = false;
+	});
+	['GetPath'] = CreateNew('TextButton',{
+		['Name'] = 'GetPath';
+		['Size'] = UDim2.new(0.2,0,0.5,0);
+		['Position'] = UDim2.new(0.75,0,0.45,0);
+		['BackgroundColor3'] = Color3.fromRGB(40,40,40);
+		['BorderColor3'] = Color3.fromRGB(0,0,0);
+		['Text'] = 'Get Path';
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+	});
+})
+
+local ScriptIgnores = {
+	[game:GetService('CoreGui')] = true;
+	[game:GetService('CorePackages')] = true;
+	[game:GetService('Chat')] = true;
+	[game:GetService('StarterPlayer').StarterPlayerScripts] = true;
+	[game:GetService('StarterGui')] = true;
+	[Exploiter.PlayerScripts.ChatScript] = true;
+	[Exploiter.PlayerScripts.PlayerModule] = true;
+}
+local IgnoreNames = {
+	['ChatScript'] = true;
+	['BubbleChat'] = true;
+	['PlayerModule'] = true;
+	['PlayerScriptsLoader'] = true;
+	['Animate'] = true;
+}
+local BasicEvents = {
+	'AncestryChanged','AttributeChanged','Changed','ChildAdded','ChildRemoved','DescendantAdded','DescendantRemoving'
+};
+local GuiEvents = {
+	'InputBegan','InputChanged','InputEnded','MouseEnter','MouseLeave','MouseMoved','MouseWheelBackward','MouseWheelForward','SelectionGained','SelectionLost','TouchLongPress','TouchPan','TouchPinch','TouchRotate','TouchSwipe','TouchTap'
+}
+local IsGui = {
+	'TextBox','TextLabel','TextButton',''
+}
+local CustomEvents = {
+	['TextBox'] = {'FocusLost','Focued','ReturnPressedFromOnScreenKeyboard'};
+	['TextButton'] = {'Activated','MouseButton1Click','MouseButton1Down','MouseButton1Up','MouseButton2Click','MouseButton2Down','MouseButton2Up'};
+	
+	['PlayerMouse'] = {'Button1Down','Button1Up','Button2Down','Button2Up','Idle','Move','WheelBackward','WheelForward'};
+	
+	['RemoteEvent'] = {'OnClientEvent'};
+	['RemoteFunction'] = {'OnClientInvoke'};
+	['BindableEvent'] = {'Event'};
+	['BindableFunction'] = {'Invoke'};
+}
+
+local Services = {
+	['Workspace'] = {};
+	['RunService'] = {
+		'Heartbeat','PostSimulation','PreAnimation','PreRender','PreSimulation','RenderStepped','Stepped'
+	};
+	['GuiService'] = {
+		'CloseInspectMenuRequest','CoreGuiRenderOverflowed','EmotesMenuOpenChanged','InspectMenuEnabledChangedSignal','InspectPlayerFromUserIdWithCtxRequest','KeyPressed','MenuClosed','MenuOpened','NativeClose','NewtworkPausedEnabledChanged','Open9SliceEditor','SafeZoneOffsetsChanged','ShowLeaveConfirmation','SpecialKeyPressed','UiMessageChanged'	
+	};
+	['SoundService'] = {
+		'DeviceListChanged'	
+	};
+	['LogService'] = {
+		'HttpResultOut','MessageOut','OnHttpResultApproved','ServerHttpResultOut','ServerMessageOut'	
+	};
+	['MarketplaceService'] = {
+		'ClientLuaDialogRequested','ClientPurchaseSuccess','NativePurchaseFinished','PromptBundlePurchaseFinished','PromptBundlePurchaseRequested','PromptGamePassPurchaseFinished','PromptGamePassPurchaseRequested','PromptPremiumPurchaseFinished','PromptPremiumPurchaseRequested','PromptProductPurchaseRequested','PromptPurchaseFinished','PromptPurchaseRequested','PromptSubscriptionCancellationFinished','PromptSubscriptionCancellationRequested','PromptSubscriptionPurchaseFinished','PromptSubscriptionPurchaseRequested','ThirdpartyPurchaseFinished'	
+	};
+	['Chat'] = {
+		'BubbleChatSettingsChanged','Chatted'	
+	};
+	['Players'] = {
+		'FriendRequestEvent','GameAnnounce','PlayerAdded','PlayerChatted','PlayerConnecting','PlayerDisconnecting','PlayerMembershipChanged','PlayerRejoining','PlayerRemoving'	
+	};
+	['PointsService'] = {
+		'PointsAwarded'	
+	};
+	['NotificationService'] = {
+		'Roblox17sConnectionChanged','Roblox17sEventReceived','RobloxConnectionChanged','RobloxEventReceived'	
+	};
+	['ReplicatedFirst'] = {
+		'DefaultLoadingGuiRemoved','FinishedReplicating','RemoveDefaultLoadingGuiSignal'
+	};
+	['StarterGui'] = {
+		'CoreGuiChangedSignal';
+	};
+	['TeleportService'] = {
+		'LocalPlayerArrivedFromTeleport','TeleportInitFailed'
+	};
+	['ContextActionService'] = {
+		'BoundActionAdded','BoundActionChanged','BoundActionRemoved','GetActionbuttonEvent','LocalToolEquipped','LocalToolUnequipped'
+	};
+	['ScriptContext'] = {
+		'Error','ErrorDetailed'
+	};
+	['Lighting'] = {
+		'LightingChanged'
+	};
+	['ProximityPromptService'] = {
+		'PromptButtonHoldBegan','PromptButtonHoldEnded','PromptHidden','PromptShown','PromptTriggerEnded','PromptTriggered'
+	};
+	['UserInputService'] = {
+		'DeviceAccelerationChanged','DeviceGravityChanged','DeviceRotationChanged','GamepadConnected','GamepadDisconnected','InputBegan','InputChanged','InputEnded','JumpRequest','LastInputTypeChanged','PointerAction','StatusBarTapped','TextBoxFocusReleased','TextBoxFocused','TouchEnded','TouchLongPress','TouchMoved','TouchPan','TouchPinch','TouchRotate','TouchStarted','TouchSwipe','TouchTap','TouchTapInWorld','UserCFrameChanged','WindowFocusReleased'
+	};
+	
+};
+local funcs = {
+	':FireServer',':InvokeServer','.OnClientEvent','.OnClientInvoke','.Event','.Invoke'
+}
+
+local ToPrint = true
+local ToWrite = true
+local LoadedScripts = getscripts()
+local LoadedModules = getloadedmodules()
+local SortedScripts = {}
+local SortedModules = {}
+function CheckIgnores(sc)
+	local good = true
+	for i,v in pairs(ScriptIgnores) do
+		if sc:IsDescendantOf(i) then
+			good = false
+			break
+		end
+	end
+	if IgnoreNames[sc.Name] then
+		good = false
+	end
+	return good
+end
+for i,v in pairs(LoadedScripts) do
+	local good = CheckIgnores(v)
+	if good == true then
+		SortedScripts[v.Name] = v;
+	end
+end
+for i,v in pairs(LoadedModules) do
+	local good = CheckIgnores(v)
+	if good == true then
+		SortedModules[v.Name] = v;
+	end
+end
+
+local Selected = 'None'
+local InstanceSelected = 'None';
+local EventSelected = 'None';
+local SelectedInstance = nil
+local Custom = nil;
+
+local Commands = {
+	'GetConnections','GetSEnv','ModuleReader'
+}
+function NewSelection(what,is,c)
+	local sel = InfoFrame[what..'Selected']
+	if c then
+		sel.Text = c:GetFullName()
+		SelectedInstance = c
+	else
+		sel.Text = is
+	end
+	
+	if what == 'Instance' then
+		InstanceSelected = is;
+		SelectedInstance = (game:FindFirstChild(is)) or c
+	else
+		EventSelected = is;
+	end
+end
+function ClearScroll(F)
+	for i,v in pairs(F.Scroll:GetChildren()) do
+		if v:IsA('TextButton') then
+			v:Destroy()
+		end
+	end
+	F.Scroll.CanvasSize = UDim2.new(0,0,0,300)
+	return
+end
+function CreateEvents(tbl)
+	local s = 20*#tbl
+	EventFrame.Scroll.CanvasSize = UDim2.new(0,0,0,s)
+	for i,v in pairs(tbl) do
+		local butt = CreateNew('TextButton',{
+			['Name'] = v;
+			['Size'] = UDim2.new(1,0,0,20);
+			['BackgroundColor3'] = Color3.fromRGB(40,40,40);
+			['BorderColor3'] = Color3.fromRGB(0,0,0);
+			['Text'] = v;
+			['TextColor3'] = Color3.fromRGB(255,255,255);
+			['TextXAlignment'] = Enum.TextXAlignment.Left;
+			['TextScaled'] = true;
+			['Parent'] = EventFrame.Scroll
+		})
+		butt.MouseButton1Down:connect(function()
+			NewSelection('Event',v)
+			Custom = nil
+		end)
+	end
+end
+function CreateInstances(tbl)
+	local s = 0
+	for i,v in pairs(tbl) do
+		s = s+20
+		local butt = CreateNew('TextButton',{
+			['Name'] = i;
+			['Size'] = UDim2.new(1,0,0,20);
+			['BackgroundColor3'] = Color3.fromRGB(40,40,40);
+			['BorderColor3'] = Color3.fromRGB(0,0,0);
+			['Text'] = i;
+			['TextColor3'] = Color3.fromRGB(255,255,255);
+			['TextXAlignment'] = Enum.TextXAlignment.Left;
+			['TextScaled'] = true;
+			['Parent'] = InstanceFrame.Scroll
+		})
+		coroutine.resume(coroutine.create(function()
+			butt.MouseButton1Down:connect(function()
+				ClearScroll(EventFrame)
+				NewSelection('Event','None')
+				Custom = nil
+				if Selected == 'GetConnections' then
+					NewSelection('Instance',i)
+					local this = {}
+					for i2,v2 in pairs(BasicEvents) do
+						table.insert(this,v2)
+					end
+					for i2,v2 in pairs(Services[i]) do
+						table.insert(this,v2)
+					end
+					CreateEvents(this)
+				else
+					NewSelection('Instance',SortedScripts[i]:GetFullName(),SortedScripts[i])
+				end
+			end)
+		end))
+	end
+	InstanceFrame.Scroll.CanvasSize = UDim2.new(0,0,0,s)
+end
+
+function Reader(stbl)
+	local got = ''
+	local FuncTesting = false
+	local function rev(tbl,tab)
+		for i,v in pairs(tbl) do
+			if type(v) == 'table' then
+				if type(i) == 'string' then
+					got = got..tab.."['"..tostring(i).."'] = {"
+				else
+					got = got..tab.."["..tostring(i).."] = {"
+				end
+				local pregot = got
+				got = got..'\n'
+				local lastgot = got
+				rev(v,tab..'    ')
+				if got == lastgot then
+					got = pregot
+					got = got..'};'..'\n'
+				else
+					got = got..tab..'};'..'\n'
+				end
+			else
+				got = got..tab.."['"..tostring(i).."'] = "
+				if type(v) == 'number' or type(v) == 'boolean' then
+					got = got..tostring(v)
+				elseif type(v) == 'string' then
+					got = got.."'"..tostring(v).."'"
+				elseif type(v) == 'userdata' then
+					local now = ''
+					local udata = {
+						['Color3'] = 'Color3.fromRGB(';
+						['UDim2'] = 'UDim2.new(';
+						['UDim'] = 'UDim.new(';
+						['Vector3'] = 'Vector3.new(';
+						['Vector2'] = 'Vector2.new(';
+						['CFrame'] = 'CFrame.new(';
+					}
+					if udata[typeof(v)] then
+						local new = tostring(v)
+						if typeof(v) == 'Color3'  then
+							local R = tostring(math.floor(v['R']*255))
+							local G = tostring(math.floor(v['G']*255))
+							local B = tostring(math.floor(v['B']*255))
+							new = R..','..G..','..B
+						elseif typeof(v) == 'UDim2' then
+							local XS = tostring(v['X']['Scale'])
+							local XO = tostring(v['X']['Offset'])
+							local YS = tostring(v['Y']['Scale'])
+							local YO = tostring(v['Y']['Offset'])
+							new = XS..','..XO..','..YS..','..YO
+						end
+						now = udata[typeof(v)]..new..')'
+					else
+						now = tostring(v)
+					end
+					got = got..now
+				elseif type(v) == 'function' and FuncTesting == true then
+					got = got..'function()'
+					local pregot = got
+					got = got..'\n'
+					local lastgot = got
+					
+					local deb = debug.getinfo(v)
+					
+					rev(deb,tab..'    ')
+					if got == lastgot then
+						got = pregot
+						got = got..' end;'
+					else
+						got = got..tab..'end'..'\n'
+					end
+				else
+					got = got..tostring(v)
+				end
+				got = got..'\n'
+			end
+		end
+	end
+	
+	rev(stbl,'	')
+	return got
+end
+function Proceed(ss)
+	if ToPrint == true then
+		print(ss)
+	end
+	if ToWrite == true then
+		syn.write_clipboard(ss)
+	end
+end
+
+InfoFrame.PrintFrame.PrintButton.MouseButton1Down:connect(function()
+	ToPrint = (not ToPrint)
+	InfoFrame.PrintFrame.PrintButton.BackgroundColor3 = (ToPrint and Color3.fromRGB(0,255,0)) or Color3.fromRGB(255,0,0)
+end)
+InfoFrame.WriteFrame.WriteButton.MouseButton1Down:connect(function()
+	ToWrite = (not ToWrite)
+	InfoFrame.WriteFrame.WriteButton.BackgroundColor3 = (ToWrite and Color3.fromRGB(0,255,0)) or Color3.fromRGB(255,0,0)
+end)
+InfoFrame.Activate.MouseButton1Down:connect(function()
+	if InstanceSelected ~= 'None' then
+		if Selected == 'GetConnections' then
+			if EventSelected ~= 'None' then
+				local gc = getconnections(SelectedInstance[EventSelected])
+				local ss = '['..SelectedInstance.Name..'] ['..EventSelected..'] - Connections - #'
+				local s = ''
+				local count = 0
+				for i,v in pairs(gc) do
+					local func = v.Function
+					local sc = getfenv(func).script
+					if sc and SortedScripts[sc.Name] then
+						count = count+1
+						local this = '	(Script): '..sc:GetFullName()..';'..'\n'
+						this = this..'	----------'
+						s = s..this..'\n'
+					end
+				end
+				ss = ss..tostring(count)..'\n'
+				ss = ss..s
+				Proceed(ss)
+			end
+		else
+			local tbl 
+			local good = true
+			local ss = '['..SelectedInstance.Name..'] - '
+			if Selected == 'GetSEnv' then
+				ss = ss..'Script Environment -'
+				ss = ss..'\n'
+				local succ,err = pcall(function()
+					return getsenv(SelectedInstance)
+				end)
+				if succ then
+					tbl = getsenv(SelectedInstance)
+				elseif not succ and err then
+					good = false
+					ss = ss..'	[ERROR] - Could Not Get Script Environment'
+				end
+			elseif Selected == 'ModuleReader' then
+				ss = ss..'Module Reader -'
+				ss = ss..'\n'
+				if Custom then
+					local ThisCustom = 'local GetCustom = '..Custom..'\n'
+					ThisCustom = ThisCustom..'return GetCustom'
+					local ls = loadstring(ThisCustom)
+					ss = ss..'	[CUSTOM] - '..Custom
+					if ls == nil then
+						good = false
+						ss = ss..'	[ERROR] - Custom Returned Nil'
+					elseif type(ls) == 'table' then
+						tbl = ls
+					end
+				else
+					tbl = require(SelectedInstance)
+					if tbl == nil then
+						good = false
+						ss = ss..'	[ERROR] - Require Return Nil'
+					end
+				end
+			end
+			if good == true then
+				local get = Reader(tbl)
+				ss = ss..'{'..'\n'
+				ss = ss..get
+				ss = ss..'}'
+			end
+			Proceed(ss)
+		end
+	end
+end)
+TopBar.Close.MouseButton1Down:connect(function()
+	MainGui:Destroy()
+end)
+AdvancedFrame.GetPath.MouseButton1Down:connect(function()
+	local RawPath = AdvancedFrame.CustomPathway.Text
+	if RawPath == '' or RawPath == ' ' then return end
+	local NewPath = RawPath
+	local path = game
+	if string.lower(string.sub(NewPath,0,4)) == 'game' then
+		NewPath = string.sub(NewPath,6)
+	end
+	if string.find(NewPath,'GetService') then
+		local OldPath = NewPath
+		local theend = string.find(OldPath,')',0,true)
+		NewPath = string.sub(OldPath,13,theend-2)..string.sub(OldPath,theend+1)
+	end
+	local isf = false
+	local found = true
+	local good = true
+	for i,v in pairs(funcs) do
+		local thisf = string.find(NewPath,v,0,true)
+		if thisf then
+			isf = RawPath
+			NewPath = string.sub(NewPath,0,thisf-1)
+			break
+		end
+	end
+	while wait() do
+		if found == false then break end
+		local dot = string.find(NewPath,'.',0,true)
+		local bra = string.find(NewPath,'[',0,true)
+		local clo = string.find(NewPath,']',0,true)
+		local this = NewPath
+		if dot == nil and bra == nil then
+			found = false
+		elseif (dot ~= nil and bra == nil) or (dot ~= nil and bra ~= nil and dot < bra) then
+			if clo and clo < dot then
+				this = string.sub(NewPath,0,dot-3)
+				NewPath = string.sub(NewPath,dot+1)
+			else
+				this = string.sub(NewPath,0,dot-1)
+				NewPath = string.sub(NewPath,dot+1)
+			end
+			
+		elseif (dot == nil and bra ~= nil) or (dot ~= nil and bra ~= nil and bra < dot) then
+			if clo and clo < bra then
+				this = string.sub(NewPath,0,bra-3)
+				NewPath = string.sub(NewPath,bra+2)
+			else
+				this = string.sub(NewPath,0,bra-1)
+				NewPath = string.sub(NewPath,bra+2)
+			end
+		end
+		if path:FindFirstChild(this) then
+			path = path:FindFirstChild(this)
+		else
+			found = false
+			good = false
+			AdvancedFrame.CustomPathway.Text = 'Error, Could Not Find: '..this
+			AdvancedFrame.CustomPathway.TextColor3 = Color3.fromRGB(255,0,0)
+		end
+	end
+	if good == false then
+		wait(3)
+		AdvancedFrame.CustomPathway.Text = RawPath
+		AdvancedFrame.CustomPathway.TextColor3 = Color3.fromRGB(255,255,255)
+	else
+		NewSelection('Instance',RawPath,path)
+		NewSelection('Event','None')
+		if Selected == 'GetConnections' then
+			ClearScroll(EventFrame)
+			local this = {}
+			for i,v in pairs(BasicEvents) do
+				table.insert(this,v)
+			end
+			if table.find(IsGui,path.ClassName) then
+				for i,v in pairs(GuiEvents) do
+					table.insert(this,v)
+				end
+			end
+			if CustomEvents[path.ClassName] then
+				for i,v in pairs(CustomEvents[path.ClassName]) do
+					table.insert(this,v)
+				end
+			end
+			CreateEvents(this)
+		elseif Selected == 'ModuleReader' then
+			Custom = isf
+		end
+	end
+end)
+
+function SwitchCommand(Com)
+	ClearScroll(InstanceFrame)
+	ClearScroll(EventFrame)
+	Selected = Com
+	NewSelection('Instance','None');
+	NewSelection('Event','None')
+	local tbl = {}
+	if Com == 'GetConnections' then
+		tbl = Services
+	elseif Com == 'GetSEnv' then
+		tbl = SortedScripts
+	elseif Com == 'ModuleReader' then
+		tbl = SortedModules
+	end
+	
+	CreateInstances(tbl)
+end
+
+
+for i,v in pairs(Commands) do
+	local butt = CreateNew('TextButton',{
+		['Name'] = v;
+		['Size'] = UDim2.new(0.2,0,0.8,0);
+		['BackgroundColor3'] = Color3.fromRGB(40,40,40);
+		['BorderColor3'] = Color3.fromRGB(0,0,0);
+		['Text'] = v;
+		['TextColor3'] = Color3.fromRGB(255,255,255);
+		['TextScaled'] = true;
+		['Parent'] = CommandFrame
+	});
+	butt.MouseButton1Down:connect(function()
+		SwitchCommand(v)
+	end)
+end
