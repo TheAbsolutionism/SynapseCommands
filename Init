@@ -464,15 +464,21 @@ function NewSelection(what,is,c)
 	end
 	
 	if what == 'Instance' then
-		InstanceSelected = is;
-		local succ,err = pcall(function()
-			return game:GetService(is)
-		end)
-		if succ and not err then
-			SelectedInstance = game:GetService(is)
+		if is == 'None' then
+			InstanceSelected = 'None'
+			SelectedInstance = nil
 		else
-			SelectedInstance = c
+			InstanceSelected = is;
+			local succ,err = pcall(function()
+				return game:GetService(is)
+			end)
+			if succ then
+				SelectedInstance = err
+			else
+				SelectedInstance = c
+			end
 		end
+		
 	else
 		EventSelected = is;
 	end
