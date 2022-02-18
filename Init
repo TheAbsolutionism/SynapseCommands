@@ -465,7 +465,14 @@ function NewSelection(what,is,c)
 	
 	if what == 'Instance' then
 		InstanceSelected = is;
-		SelectedInstance = (game:FindFirstChild(is)) or c
+		local succ,err = pcall(function()
+			return game:GetService(is)
+		end)
+		if succ and not err then
+			SelectedInstance = game:GetService(is)
+		else
+			SelectedInstance = c
+		end
 	else
 		EventSelected = is;
 	end
@@ -643,13 +650,13 @@ InfoFrame.Activate.MouseButton1Down:connect(function()
 		if Selected == 'GetConnections' then
 			if EventSelected ~= 'None' then
 				local gc = getconnections(SelectedInstance[EventSelected])
-				local ss = '['..SelectedInstance.Name..'] ['..EventSelected..'] - Connections - #'
+				local ss = '['..InstanceSelected..'] ['..EventSelected..'] - Connections - #'
 				local s = ''
 				local count = 0
 				for i,v in pairs(gc) do
 					local func = v.Function
 					local sc = getfenv(func).script
-					if sc and SortedScripts[sc.Name] then
+					if sc and SortedScripts[sc.Name] and sc.Parent ~= nil then
 						count = count+1
 						local this = '	(Script): '..sc:GetFullName()..';'..'\n'
 						this = this..'	----------'
